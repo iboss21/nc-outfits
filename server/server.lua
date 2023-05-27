@@ -1,19 +1,10 @@
-FrameWork = nil
-Outfits = {}
-TriggerEvent(Config.TriggerPrefix .. ':GetObject', function(obj) FrameWork = obj end)
+local QBCore = exports['qb-core']:GetCoreObject()
 
-CreateThread(function()
-    Wait(500)
-    local fetch = json.decode(LoadResourceFile(GetCurrentResourceName(), "./database.json"))
-    if fetch then
-        Outfits = fetch
-    end
-end)
 
 RegisterServerEvent("nc-outfits:server:createOutfit")
 AddEventHandler("nc-outfits:server:createOutfit", function(slot, data)
     local src = source
-    local xPlayer = FrameWork.Functions.GetPlayer(src)
+    local xPlayer = QBCore.Functions.GetPlayer(src)
     local citizenid = xPlayer.PlayerData.citizenid
     local slot = tonumber(slot)
     local char = xPlayer.PlayerData.citizenid
@@ -44,14 +35,14 @@ AddEventHandler("nc-outfits:server:createOutfit", function(slot, data)
         Outfits[citizenid][slot] = { outfit = data }
     end
 
-    TriggerClientEvent("FrameWork:Notify",src, "Saved outfit number " .. slot)
+    TriggerClientEvent("QBCore:Notify",src, "Saved outfit number " .. slot)
     SaveResourceFile(GetCurrentResourceName(), "./database.json", json.encode(Outfits), -1)
 end)
 
 RegisterServerEvent("nc-outfits:server:delete")
 AddEventHandler("nc-outfits:server:delete", function(data)
     local src    = source
-    local Player = FrameWork.Functions.GetPlayer(src)
+    local Player = QBCore.Functions.GetPlayer(src)
     local slot   = tonumber(data.slot)
 
     if not slot or not Outfits[Player.PlayerData.citizenid] then
@@ -62,14 +53,14 @@ AddEventHandler("nc-outfits:server:delete", function(data)
         Outfits[Player.PlayerData.citizenid][slot] = nil
     end
 
-    TriggerClientEvent("FrameWork:Notify",src, "Deleted outfit number " .. slot, "error")
+    TriggerClientEvent("QBCore:Notify",src, "Deleted outfit number " .. slot, "error")
     SaveResourceFile(GetCurrentResourceName(), "./database.json", json.encode(Outfits), -1)
 end)
 
 RegisterServerEvent("nc-outfits:server:setOutfit")
 AddEventHandler("nc-outfits:server:setOutfit", function(data)
     local src    = source
-    local Player = FrameWork.Functions.GetPlayer(src)
+    local Player = QBCore.Functions.GetPlayer(src)
     local slot   = tonumber(data.slot)
 
     if not slot or not Outfits[Player.PlayerData.citizenid] then
@@ -82,9 +73,9 @@ AddEventHandler("nc-outfits:server:setOutfit", function(data)
     end
 end)
 
-FrameWork.Commands.Add("outfits", "Outfits Menu", {}, false, function(source, args)
+QBCore.Commands.Add("outfits", "Outfits Menu", {}, false, function(source, args)
     local src    = source
-    local Player = FrameWork.Functions.GetPlayer(src)
+    local Player = QBCore.Functions.GetPlayer(src)
     local force  = false
 
     if(#args == 1 and args[1] == "--force") then
@@ -96,7 +87,7 @@ FrameWork.Commands.Add("outfits", "Outfits Menu", {}, false, function(source, ar
     if(Outfits[Player.PlayerData.citizenid] == nil or l == 0) then
         Outfits[Player.PlayerData.citizenid] = {}
         SaveResourceFile(GetCurrentResourceName(), "./database.json", json.encode(Outfits), -1)
-        return TriggerClientEvent("FrameWork:Notify", source, "You don't have any outfits.", "error")
+        return TriggerClientEvent("QBCore:Notify", source, "You don't have any outfits.", "error")
     end
 
     TriggerClientEvent("nc-outfits:client:openMenu", src, Outfits[Player.PlayerData.citizenid])
@@ -105,7 +96,7 @@ end)
 RegisterNetEvent("nc-outfits:server:openUI")
 AddEventHandler("nc-outfits:server:openUI", function()
     local src    = source
-    local Player = FrameWork.Functions.GetPlayer(src)
+    local Player = QBCore.Functions.GetPlayer(src)
     local force  = false
 
     if(#args == 1 and args[1] == "--force") then
@@ -117,21 +108,21 @@ AddEventHandler("nc-outfits:server:openUI", function()
     if(Outfits[Player.PlayerData.citizenid] == nil or l == 0) then
         Outfits[Player.PlayerData.citizenid] = {}
         SaveResourceFile(GetCurrentResourceName(), "./database.json", json.encode(Outfits), -1)
-        return TriggerClientEvent("FrameWork:Notify", source, "You don't have any outfits.", "error")
+        return TriggerClientEvent("QBCore:Notify", source, "You don't have any outfits.", "error")
     end
 
     TriggerClientEvent("nc-outfits:client:openMenu", src, Outfits[Player.PlayerData.citizenid])
 end)
 
-FrameWork.Commands.Add("saveoutfit", "Save your outfit", {{name="number", help="Number"}}, true, function(source, args)
+QBCore.Commands.Add("saveoutfit", "Save your outfit", {{name="number", help="Number"}}, true, function(source, args)
     local outfitNumber = tonumber(args[1])
 
     if(outfitNumber == nil) then
-        return TriggerClientEvent("FrameWork:Notify", source, "Wrong outfit number [1 - 25]", "error")
+        return TriggerClientEvent("QBCore:Notify", source, "Wrong outfit number [1 - 25]", "error")
     end
 
     if(outfitNumber <= 0 or outfitNumber > 25) then
-        return TriggerClientEvent("FrameWork:Notify", source, "Wrong outfit number [1 - 25]", "error")
+        return TriggerClientEvent("QBCore:Notify", source, "Wrong outfit number [1 - 25]", "error")
     end
 
     TriggerClientEvent("nc-outfits:client:saveOutfit", source, outfitNumber)
