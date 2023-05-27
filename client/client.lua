@@ -1,13 +1,5 @@
-FrameWork = nil
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(10)
-        if FrameWork == nil then
-            TriggerEvent(Config.TriggerPrefix .. ':GetObject', function(obj) FrameWork = obj end)
-            Citizen.Wait(200)
-        end
-    end
-end)
+local QBCore = exports['qb-core']:GetCoreObject()
+
 
 local isInMenu = false
 local currentTats = {}
@@ -95,7 +87,7 @@ RegisterNetEvent("nc-outfits:client:saveOutfit", function(slot)
     end
 
     if(not found) then
-        FrameWork.Functions.Notify("You aren't close to any clothing shop.", "error")
+        QBCore.Functions.Notify("You aren't close to any clothing shop.", "error")
         return
     end
 
@@ -136,7 +128,7 @@ RegisterNetEvent("nc-outfits:client:openMenu", function(data)
     end
 
     if(not found) then
-        FrameWork.Functions.Notify("You aren't close to any clothing shop.", "error")
+        QBCore.Functions.Notify("You aren't close to any clothing shop.", "error")
         return
     end
 
