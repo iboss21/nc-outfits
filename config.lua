@@ -1,2 +1,2 @@
 Config = {}
-Config.TriggerPrefix = "FrameWork" -- Your core shared trigger.
+Config.TriggerPrefix = "qb-core" -- Your core shared trigger.
